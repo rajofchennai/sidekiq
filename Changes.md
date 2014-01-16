@@ -1,10 +1,33 @@
+2.17.2
+-----------
+
+- Fix race condition in bulk requeue during shutdown [#1406]
+- Fix bug where strictly prioritized queues might be processed out of
+  order [#1408]. A side effect of this change is that it breaks a queue
+  declaration syntax that worked, although only because of a bug—it was
+  never intended to work and never supported. If you were declaring your
+  queues as a  comma-separated list, e.g. `sidekiq -q critical,default,low`,
+  you must now use the `-q` flag before each queue, e.g.
+  `sidekiq -q critical -q default -q low`.
+
+2.17.1
+-----------
+
+- Expose `delay` extension as `sidekiq_delay` also.  This allows you to
+  run Delayed::Job and Sidekiq in the same process, selectively porting
+  `delay` calls to `sidekiq_delay`.  You just need to ensure that
+  Sidekiq is required **before** Delayed::Job in your Gemfile. [#1393]
+- Bump redis client required version to 3.0.6
+- Minor CSS fixes for Web UI
+
 2.17.0
 -----------
 
 - Change `Sidekiq::Client#push_bulk` to return an array of pushed `jid`s. [#1315, barelyknown]
 - Web UI refactoring to use more API internally (yummy dogfood!)
+- Much faster Sidekiq::Job#delete performance for larger queue sizes
 - Further capistrano 3 fixes
-- Misc minor fixes
+- Many misc minor fixes
 
 2.16.1
 -----------
